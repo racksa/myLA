@@ -1,12 +1,12 @@
 \documentclass[paper=a4,fontsize=11pt]{scrartcl} % KOMA-article class
 
-\documentclass{article}
+\usepackage{parskip}
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage[utf8]{inputenc}
 \usepackage[textwidth=17cm,textheight=25cm]{geometry}
-\usepackage{amsmath}
-
+\usepackage{amssymb,amsmath,amsthm}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 \title{An example of using linear algebra}
 
@@ -26,22 +26,22 @@ A physical law, called Maxwell's equations, says that in vacuum,
 \begin{align} \label{maxwell}
     \nabla\cdot\mathbf{E} &= \frac{\rho}{\epsilon_0},
 \end{align}
-where $\epsilon_0$ is just a physical constant that we do not need care too much. Substituting $eq.[\ref{potential}]$ into $eq.[\ref{maxwell}]$, we have
+where $\epsilon_0$ is just a physical constant that we do not need care too much. Substituting eq.[\ref{potential}] into eq.[\ref{maxwell}], we have
 \begin{align}\label{maxwell2}
     -\nabla^2 \phi &= \frac{\rho}{\epsilon_0}.
 \end{align}
 
-So far, I haven't tell you what $\nabla$ represents, but in 1-D space it is equivalent to the operation of computing the derivative, i.e. $\nabla\equiv\frac{d}{dx}$, so $eq.[\ref{maxwell}]$ becomes a relatively more friendly form,
+So far, I haven't told you what $\nabla$ represents, but in 1-D space it is equivalent to the operation of computing the derivative, i.e. $\nabla\equiv\frac{d}{dx}$, so eq.[\ref{maxwell}] becomes a relatively more friendly form,
 \begin{align} \label{maxwell3}
 -\frac{d^2\phi}{dx^2} &= \frac{\rho}{\epsilon_0}.
 \end{align}
-Now we have an ordinary differential equation, and what meaning does it have? It means that if you give me a function $\rho(x)$ that describes where charges are located in a 1-D space, I can solve the differential equation $eq.[\ref{maxwell3}]$ for $\phi(x)$, and tell you the electric field $\mathbf{E}(x)$ at any point in the 1-D space!
+Now we have an ordinary differential equation, and what meaning does it have? It means that if you give me a function $\rho(x)$ that describes where charges are located in a 1-D space, I can solve the differential equation eq.[\ref{maxwell3}] for $\phi(x)$, and tell you the electric field $\mathbf{E}(x)$ at any point in the 1-D space!
 
 How do we solve this equation? Easy, you just need to integrate the equation twice to get an expression for $\phi$! However, what if $\rho(x)$ is very nasty that you cannot integrate it by hand? One tricky way is to solve it NUMERICALLY, which almost always needs the aid of a computer. I will show you how.
 
 Imagine a straight line of finite length $L$, and we can cut the line into pieces of equal lengths, say $h$. we now have $n=\frac{L}{h}$ pieces of line, and $N=n+1$ nodes. Denote the position of nodes by $x_0$, $x_1$, ..., $x_N$, and the values of them are $0$, $h$, ..., $Nh$. We can denote the electric potential $\phi(x)$ at the nodes as $\phi_0$, $\phi_1$, ..., $\phi_N$, which are what we want to find. If you give me a charge distribution function $\rho(x)$, I can certainly calculate the charge at the nodes: $\rho(x_0)$, $\rho(x_1)$, ..., $\rho(x_N)$. Let us write them down as vectors for now, and we will use them later.
 
-\begin{equation}
+\begin{equation}\label{vectors}
 \mathbf{x}=
     \begin{pmatrix}
     x_0 \\
@@ -99,21 +99,27 @@ and the second derivative:
     \frac{d^2y}{dx^2} &= \lim\limits_{h \to 0}\frac{[y(x+h) - y(x)] - [y(x)-y(x-h)]}{h^2} \\
     &=  \lim\limits_{h \to 0}\frac{y(x+h) - 2y(x) + y(x-h)}{h^2}.
 \end{align}
-If $h$ is small enough, we can approximate the second derivative with 
-\begin{align}
-    \frac{d^2y}{dx^2} \approx  \frac{y(x+h) - 2y(x) + y(x-h)}{h^2}.
-\end{align}
-We can obtain the discretised form of the second derivative:
+
+In our discretised line, if we make the spacing $h$ small enough, we can approximate the second derivative with
 \begin{align}\label{difference_matrix}
     \frac{d^2\phi_i}{dx^2} &\approx  \frac{\phi(x_i+h) - 2\phi(x_i) + \phi(x_i-h)}{h^2} \\
-    &\approx \frac{\phi_{i+1} - 2\phi_i + \phi_{i-1}}{h^2}.
+    &\approx \frac{\phi_{i+1} - 2\phi_i + \phi_{i-1}}{h^2},
 \end{align}
+which is a discretised form of eq.[\ref{maxwell3}].
 
-The original differential equation $eq.[\ref{maxwell3}]$ can be written down in the matrix form:
+Let me give you a picture of this. For the origin differential equation, you have a smooth curve and on every random point $x_c$ on the curve, eq.[\ref{maxwell3}] must be satisfied, i.e. 
+\begin{align}\label{continuous}
+    -\frac{d^2\phi}{dx^2}\Bigr|_{x=x_c} &= \frac{\rho(x_c)}{\epsilon_0}.
+\end{align}
+Now we have cut the line into pieces so we only concern the $(N+1)$ points. The functions that they must satisfy are
+\begin{align}\label{discretised}
+    \frac{\phi_{i+1} - 2\phi_i + \phi_{i-1}}{h^2} &= \frac{\rho_i}{\epsilon_0}, \ \  i=1, 2, ..., N-1.
+\end{align}
+The end points will have slightly different expressions, which I am expecting you to work out yourself. Now we have in total $(N+1)$ eq.[\ref{discretised}]'s, and$(N+1)$ unknown $\phi_i$'s. The natural thought comes to mind is that we can assemble all these into a matrix form!
 \begin{align}\label{matrix_equation}
     \mathbf{A}\mathbf{\Phi} = \mathbf{b},
 \end{align}
-where $\mathbf{A}$ is defined as an (N+1) by (N+1) matrix:
+where $\mathbf{\Phi}$ and $\mathbf{b}$ are vectors in eq.[\ref{vectors}], and $\mathbf{A}$ is an (N+1) by (N+1) matrix with all its diagonal elements $-2$, sub-diagonal elements $1$, and $0$ otherwise:
 \begin{equation}
 \mathbf{A}=\frac{\epsilon_0}{h^2}
     \begin{pmatrix}
@@ -126,17 +132,17 @@ where $\mathbf{A}$ is defined as an (N+1) by (N+1) matrix:
     0 & 0 & 0 & 0 &  ... & 1 & -2 & 1 & 0\\
     0 & 0 & 0 & 0 &  ... & 0 & 1 & -2 & 1\\
     0 & 0 & 0 & 0 &  ... & 0 & 0 & 1 & -2\\
-    \end{pmatrix}
+    \end{pmatrix}.
 \end{equation}
-where the diagonals are all -2 and sub-diagonals 1, and is called the difference matrix.
+This matrix $\mathbf{A}$ is named the difference matrix, and is the favourite matrix of Gilbert Strang.
 
-If you do the matrix multiplication, you will find that each row (other than the end row) in the matrix equation is exactly 
+If you do the matrix multiplication to expand eq.[\ref{matrix_equation}], you will find that each row (other than the end rows) in the matrix equation is exactly 
 \begin{align}
-    \frac{\phi_{i+1} - 2\phi_i + \phi_{i-1}}{h^2} &= \frac{\rho_i}{\epsilon_0},
+    \frac{\phi_{i+1} - 2\phi_i + \phi_{i-1}}{h^2} &= \frac{\rho_i}{\epsilon_0}, \ \ i=1, 2, ..., N-1.
 \end{align}
-i.e. the discretised form of the Maxwell's equation $eq.[\ref{maxwell3}]$! Hence, solving $eq.[\ref{matrix_equation}]$ gives a discretised solution to $eq.[\ref{maxwell3}]$! This is usually the way to efficiently solve a more complex differential equation. 
+Hence, solving eq.[\ref{matrix_equation}] gives a discretised solution to eq.[\ref{maxwell3}]! This is usually the way to efficiently solve a more complex differential equation. 
 
-How do we solve $eq.[\ref{matrix_equation}]$? Learn linear algebra!
+How do we solve eq.[\ref{matrix_equation}]? Learn linear algebra!
 
 
 \end{document}
