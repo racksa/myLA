@@ -27,7 +27,7 @@ Consider a set of points $(x_i, y_i)$, where $x_i$ a strictly increasing sequenc
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.5\textwidth]{random_interpolation.png}
+  \includegraphics[width=0.5\textwidth]{image/random_interpolation.png}
   \caption{An example of interpolation 9 points using cubic splines.}
   \label{fig:random_interpolation}
 \end{figure}
@@ -46,7 +46,7 @@ s_i(x_i) & = y_{i}.
 \end{split}
 \end{equation}
 
-This will contributes $2$ equations every spline, so in total $2N$ equations. In order to achieve 'smoothness', we need further restrict that the 1st and 2nd derivatives of neighbouring splines agree at the nodes:
+This will contributes $2$ equations every spline, so in total $2N$ equations. In order to achieve 'smoothness', we require further that the 1st and 2nd derivatives of neighbouring splines agree at the nodes:
 \begin{equation}\label{spline_dev_restriction}
 \begin{split}
 s_i'(x_{i}) & = s_{i+1}'(x_{i}), \\
@@ -60,7 +60,7 @@ s_1''(x_{0}) & = 0 \\
 s_{N}''(x_{N}) & = 0.
 \end{split}
 \end{equation}
-Now we have enough information to solve for those cubic polynomials. Let's start from the 2nd derivatives of splines:
+Now we have enough information to solve for those cubic polynomials. Let's differentiate eq.[\ref{3poly}] twice to get the 2nd derivatives of splines:
 \begin{equation}\label{3poly_2ndderivative}
 s_i''(x) = 2 c_i + 6d_ix.
 \end{equation}
@@ -111,7 +111,7 @@ Use the continuity of 1st derivatives $s_i'(x_{i}) = s_{i+1}'(x_{i})$, and you m
 \end{equation}
 Look at the final expression. This reminds us of writing it down as a matrix form $\mathbf{A}{\sigma}= \mathbf{b}$, where $\mathbf{A}$ is a tridiagonal matrix, with diagonals $2(h_{i+1}+h_i)$ and sub-diagonals $h_i$ and $h_{i+1}$. The vector $\mathbf{\sigma}$ are made of $\sigma_i$s and the vector $\mathbf{b}$ are made of $6\left(\frac{y_{i+1}-y_i}{h_{i+1}}  -\frac{y_{i}-y_{i-1}}{h_i}\right)$s. 
 
-We then solve $\mathbf{A}{\sigma}= \mathbf{b}$ for $\mathbf{\sigma}$, and substitute $sigma$s into eq.[\ref{spline_expression}] to get our cubic splines! 
+We then solve $\mathbf{A}{\sigma}= \mathbf{b}$ for $\mathbf{\sigma}$, and substitute $\sigma$s into eq.[\ref{spline_expression}] to get our cubic splines! 
 
 \subsection*{Advanced topic (challenging for pre-uni students!)}
 Previously we only allow strictly increasing sequence $x_i$, which suggests that we are only able to interpolate a single-valued function $f(x_i)=y_i$. A closed curve is, however, multivalued. We must improve our method in order to interpolate a closed curve.
@@ -122,7 +122,7 @@ The example code can be found on https://github.com/racksa/CubicSplineInterpolat
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.5\textwidth]{interpolating_a_panda.png}
+  \includegraphics[width=0.5\textwidth]{image/interpolating_a_panda.png}
   \caption{An example of interpolation a panda cartoon.}
   \label{fig:random_interpolation}
 \end{figure}
