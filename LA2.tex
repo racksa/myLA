@@ -113,10 +113,12 @@ Look at the final expression. This reminds us of writing it down as a matrix for
 
 We then solve $\mathbf{A}{\sigma}= \mathbf{b}$ for $\mathbf{\sigma}$, and substitute $sigma$s into eq.[\ref{spline_expression}] to get our cubic splines! 
 
-\section*{Advanced topic (challenging for pre-uni students!)}
+\subsection*{Advanced topic (challenging for pre-uni students!)}
 Previously we only allow strictly increasing sequence $x_i$, which suggests that we are only able to interpolate a single-valued function $f(x_i)=y_i$. A closed curve is, however, multivalued. We must improve our method in order to interpolate a closed curve.
 
 The theory is simple, we introduce a new parametric variable, e.g. the indices $i$ of the boundary points, which is strictly increasing. We find the cubic spline interpolations of the two sets of points $(i, x_i)$ and $(i, y_i)$ using the method above. The 0th, 1st and 2nd derivatives of $x$ w.r.t. $i$ at the nodes agree to one another, so are that for $y$. By using chain rules, the 0th, 1st and 2nd derivatives of $y$ w.r.t. $x$ also agree at nodes, which means the parametric functions $(x(i),y(i))$ are indeed cubic spline interpolation of our closed curve!
+
+The example code can be found on https://github.com/racksa/CubicSplineInterpolation
 
 \begin{figure}[h!]
   \centering
